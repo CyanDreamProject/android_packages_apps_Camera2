@@ -2119,7 +2119,7 @@ public class PhotoModule
             mParameters.setColorEffect(colorEffect);
         }
         //Set Saturation
-        if (CameraUtil.isSupported(mParameters, "saturation") &&
+        /*if (CameraUtil.isSupported(mParameters, "saturation") &&
                 CameraUtil.isSupported(mParameters, "saturation-max")) {
             String saturationStr = mPreferences.getString(
                     CameraSettings.KEY_SATURATION,
@@ -2154,7 +2154,7 @@ public class PhotoModule
             if ((0 <= sharpness) && (sharpness <= mParameters.getMaxSharpness())) {
                 mParameters.setSharpness(sharpness);
             }
-        }
+        }*/
         // Set Face Recognition
         String faceRC = mPreferences.getString(
                 CameraSettings.KEY_FACE_RECOGNITION,
