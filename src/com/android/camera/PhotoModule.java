@@ -673,9 +673,11 @@ public class PhotoModule
     @Override
     public void resizeForPreviewAspectRatio() {
         setPreviewFrameLayoutCameraOrientation();
-        Size size = mParameters.getPictureSize();
-        Log.e(TAG,"Width = "+ size.width+ "Height = "+size.height);
-        mUI.setAspectRatio((float) size.width / size.height);
+        if (mParameters != null) {
+            Size size = mParameters.getPictureSize();
+            Log.e(TAG,"Width = "+ size.width+ "Height = "+size.height);
+            mUI.setAspectRatio((float) size.width / size.height);
+        }
     }
 
 
@@ -2107,7 +2109,10 @@ public class PhotoModule
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
             // resume it because it may have been paused by autoFocus call.
             if (CameraUtil.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
-                mCameraDevice.cancelAutoFocus();
+                if (CameraUtil.cancelAutoFocusOnPreviewStopped()
+                        || mCameraState != PREVIEW_STOPPED) {
+                    mCameraDevice.cancelAutoFocus();
+                }
             }
             mFocusManager.setAeAwbLock(false); // Unlock AE and AWB.
         }
@@ -2231,8 +2236,8 @@ public class PhotoModule
             mParameters.setColorEffect(colorEffect);
         }
         //Set Saturation
-        /*if (CameraUtil.isSupported(mParameters, "saturation") &&
-                CameraUtil.isSupported(mParameters, "saturation-max")) {
+        if (CameraUtil.isSupported(mParameters, "saturation") &&
+                CameraUtil.isSupported(mParameters, "max-saturation")) {
             String saturationStr = mPreferences.getString(
                     CameraSettings.KEY_SATURATION,
                     mActivity.getString(R.string.pref_camera_saturation_default));
@@ -2244,7 +2249,7 @@ public class PhotoModule
         }
         // Set contrast parameter.
         if (CameraUtil.isSupported(mParameters, "contrast") &&
-                CameraUtil.isSupported(mParameters, "contrast-max")) {
+                CameraUtil.isSupported(mParameters, "max-contrast")) {
             String contrastStr = mPreferences.getString(
                     CameraSettings.KEY_CONTRAST,
                     mActivity.getString(R.string.pref_camera_contrast_default));
@@ -2256,7 +2261,7 @@ public class PhotoModule
         }
         // Set sharpness parameter
         if (CameraUtil.isSupported(mParameters, "sharpness") &&
-                CameraUtil.isSupported(mParameters, "sharpness-max")) {
+                CameraUtil.isSupported(mParameters, "max-sharpness")) {
             String sharpnessStr = mPreferences.getString(
                     CameraSettings.KEY_SHARPNESS,
                     mActivity.getString(R.string.pref_camera_sharpness_default));
@@ -2266,7 +2271,7 @@ public class PhotoModule
             if ((0 <= sharpness) && (sharpness <= mParameters.getMaxSharpness())) {
                 mParameters.setSharpness(sharpness);
             }
-        }*/
+        }
         // Set Face Recognition
         String faceRC = mPreferences.getString(
                 CameraSettings.KEY_FACE_RECOGNITION,
